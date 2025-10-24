@@ -10,7 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace CatchUpPlatform.API.News.Interfaces.REST;
 
 [ApiController]
-[Route("api/1v/[controller]")]
+[Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [Tags("Favorite Sources")]
 public class FavoriteSourcesController(
