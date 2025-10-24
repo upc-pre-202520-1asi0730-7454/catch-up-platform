@@ -4,6 +4,7 @@ using CatchUpPlatform.API.News.Domain.Repositories;
 using CatchUpPlatform.API.News.Infrastructure.Persistence.EFC.Repositories;
 using CatchUpPlatform.API.Shared.Domain.Repositories;
 using CatchUpPlatform.API.Shared.Domain.Services;
+using CatchUpPlatform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using CatchUpPlatform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using CatchUpPlatform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// TODO: Apply Kebab Naming Convention Policy for Routes
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options => options.EnableAnnotations());
