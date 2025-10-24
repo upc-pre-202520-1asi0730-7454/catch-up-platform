@@ -8,7 +8,7 @@ public class KebabCaseRouteNamingConvention : IControllerModelConvention
     private static AttributeRouteModel? ReplaceControllerTemplate(SelectorModel selector, string name)
     {
         return selector.AttributeRouteModel is not null 
-            ? new AttributeRouteModel { Template = selector.AttributeRouteModel.Template?.Replace("[controller] ", name.ToKebabCase()) } 
+            ? new AttributeRouteModel { Template = selector.AttributeRouteModel.Template?.Replace("[controller]", name.ToKebabCase()) } 
             : null;
     }
     
