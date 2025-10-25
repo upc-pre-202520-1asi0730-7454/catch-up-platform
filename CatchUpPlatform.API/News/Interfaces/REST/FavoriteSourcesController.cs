@@ -1,10 +1,9 @@
 using System.Net.Mime;
 using CatchUpPlatform.API.News.Domain.Model.Queries;
+using CatchUpPlatform.API.News.Domain.Services;
 using CatchUpPlatform.API.News.Interfaces.REST.Resources;
 using CatchUpPlatform.API.News.Interfaces.REST.Transform;
-using CatchUpPlatform.API.Shared.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CatchUpPlatform.API.News.Interfaces.REST;
@@ -63,5 +62,39 @@ public class FavoriteSourcesController(
         {
             return BadRequest();
         }
+    }
+
+    private async Task<IActionResult> GetAllFavoriteSourcesByNewsApiKey(string newsApiKey)
+    {
+        var getAllFavoriteSourcesByNewsApiKey = new GetAllFavoriteSourcesByNewsApiKeyQuery(newsApiKey);
+        var result  = await favoriteSourceQueryService.Handle(getAllFavoriteSourcesByNewsApiKey);
+        var resources = result
+            .Select(FavoriteSourceResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(resources);
+    }
+
+    private async Task<IActionResult> GetFavoriteSourceByNewsApiKeyAndSourceId(string newsApiKey, string sourceId)
+    {
+        var getFavoriteSourceByNewsApiKeyAndSourceId =
+            new GetFavoriteSourceByNewsApiKeyAndSourceIdQuery(newsApiKey, sourceId);
+        var result = await favoriteSourceQueryService.Handle(getFavoriteSourceByNewsApiKeyAndSourceId);
+        if (result is null) return NotFound();
+        var resource = FavoriteSourceResourceFromEntityAssembler.ToResourceFromEntity(result);
+        return Ok(resource);
+    }
+
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get Favorite Sources",
+        Description = "Retrieve favorite sources by NewsAPI Key and optionally by SourceId.",
+        OperationId = "GetFavoriteSourcesFromQuery")]
+    [SwaggerResponse(200, "Returns the favorite sources based on the provided query parameters.", typeof(FavoriteSourceResource))]
+    [SwaggerResponse(404, "Favorite source not found.")]
+    public async Task<IActionResult> GetFavoriteSourcesFromQuery([FromQuery] string newsApiKey,
+        [FromQuery] string? sourceId)
+    {
+        return string.IsNullOrEmpty(sourceId)
+            ? await GetAllFavoriteSourcesByNewsApiKey(newsApiKey)
+            : await GetFavoriteSourceByNewsApiKeyAndSourceId(newsApiKey, sourceId);
     }
 }

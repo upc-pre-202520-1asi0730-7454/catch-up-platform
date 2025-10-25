@@ -1,7 +1,8 @@
 using CatchUpPlatform.API.News.Domain.Model.Aggregates;
 using CatchUpPlatform.API.News.Domain.Model.Queries;
 using CatchUpPlatform.API.News.Domain.Repositories;
-using CatchUpPlatform.API.Shared.Domain.Services;
+using CatchUpPlatform.API.News.Domain.Services;
+
 
 namespace CatchUpPlatform.API.News.Application.Internal.QueryServices;
 
@@ -9,7 +10,7 @@ public class FavoriteSourceQueryService(
     IFavoriteSourceRepository favoriteSourceRepository
     ) : IFavoriteSourceQueryService
 {
-    public async Task<IEnumerable<FavoriteSource?>> Handle(GetAllFavoriteSourcesByNewsApiKeyQuery query)
+    public async Task<IEnumerable<FavoriteSource>> Handle(GetAllFavoriteSourcesByNewsApiKeyQuery query)
     {
         return await favoriteSourceRepository.FindByNewsApiKeyAsync(query.NewsApiKey);
     }

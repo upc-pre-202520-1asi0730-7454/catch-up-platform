@@ -1,8 +1,8 @@
 using CatchUpPlatform.API.News.Domain.Model.Aggregates;
 using CatchUpPlatform.API.News.Domain.Model.Commands;
 using CatchUpPlatform.API.News.Domain.Repositories;
+using CatchUpPlatform.API.News.Domain.Services;
 using CatchUpPlatform.API.Shared.Domain.Repositories;
-using CatchUpPlatform.API.Shared.Domain.Services;
 
 namespace CatchUpPlatform.API.News.Application.Internal.CommandServices;
 
