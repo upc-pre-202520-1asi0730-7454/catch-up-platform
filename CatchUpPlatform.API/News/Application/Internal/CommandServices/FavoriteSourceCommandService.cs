@@ -23,10 +23,10 @@ public class FavoriteSourceCommandService(
             await unitOfWork.CompleteAsync();
             return favoriteSource;
         }
-        catch (Exception)
+        catch (Exception e)
         {
             // Log exception here
-            Console.WriteLine("An error occurred while creating the favorite source.");
+            Console.WriteLine(e);
             return null;
         }
     }
