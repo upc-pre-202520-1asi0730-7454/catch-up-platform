@@ -14,14 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Localization Configuration
-builder.Services.AddLocalization()
-    .Configure<RequestLocalizationOptions>(options =>
-    {
-        string[] supportedCultures = ["en", "en-US", "es", "es-PE"];
-        options.SetDefaultCulture(supportedCultures[0])
-            .AddSupportedCultures(supportedCultures)
-            .AddSupportedUICultures(supportedCultures);
-    });
+builder.Services.AddLocalization();
 
 builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()))
     .AddDataAnnotationsLocalization();
@@ -59,6 +52,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+var supportedCultures = new[] {"en", "en-US", "es", "es-PE"};
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+app.UseRequestLocalization(localizationOptions);
 
 using var scope = app.Services.CreateScope();
 scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureCreated();
