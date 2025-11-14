@@ -33,7 +33,25 @@ if (builder.Environment.IsDevelopment())
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
         });
-
+else if (builder.Environment.IsProduction())
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+        var connectionStringTemplate = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrEmpty(connectionStringTemplate)) 
+            // Stop the application if the connection string template is not set.
+            throw new Exception("Database connection string template is not set in the configuration.");
+        var connectionString = Environment.ExpandEnvironmentVariables(connectionStringTemplate);
+        if (string.IsNullOrEmpty(connectionString))
+            // Stop the application if the connection string is not set.
+            throw new Exception("Database connection string is not set in the configuration.");
+        options.UseMySQL(connectionString)
+            .LogTo(Console.WriteLine, LogLevel.Error)
+            .EnableDetailedErrors();
+    });
 // Bounded Contexts Dependency Injection
 // Shared Context Dependency Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -46,12 +64,9 @@ builder.Services.AddScoped<IFavoriteSourceQueryService, FavoriteSourceQueryServi
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 var supportedCultures = new[] {"en", "en-US", "es", "es-PE"};
 var localizationOptions = new RequestLocalizationOptions()
