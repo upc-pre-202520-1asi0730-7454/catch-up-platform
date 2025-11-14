@@ -7,7 +7,8 @@ namespace CatchUpPlatform.API.Shared.Infrastructure.Persistence.EFC.Repositories
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
     protected readonly AppDbContext Context;
-    public BaseRepository(AppDbContext context)
+
+    protected BaseRepository(AppDbContext context)
     {
         Context = context;
     }
